@@ -1,8 +1,5 @@
-def f(s):
-    s1=s[::-1]
-    if(s==s1):
-        print("Yes")
-    else:
-        print("No")
-s=input()
-f(s)
+def palindrome (s):
+    s1 = s[::-1]
+    if s1 == s: print('Palindrome!')
+    else: print('Not palindrome!')
+palindrome(input())

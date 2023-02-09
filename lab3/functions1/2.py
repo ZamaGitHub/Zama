@@ -1,6 +1,4 @@
-def f():
-    F = int(input())
-    print((5 / 9) * (F - 32))
-
-
-f()
+def to_Cel(gradus):
+    Cgradus = (5/9 * (gradus - 32))
+    return Cgradus
+print(to_Cel(int(input())))

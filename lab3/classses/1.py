@@ -1,13 +1,14 @@
-class str():
+class String:
     def __init__(self):
-        self.str1 = ""
+        pass
 
-    def get_String(self):
-        self.str1 = input()
+    def get_string(self, string):
+        self.string = string
 
-    def print_String(self):
-        print(self.str1.upper())
+    def print_string(self):
+        return self.string.upper()
 
-str1 = str()
-str1.get_String()
-str1.print_String()
+
+Mystr = String()
+Mystr.get_string(input())
+print(Mystr.print_string())

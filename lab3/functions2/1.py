@@ -1,3 +1,42 @@
+def check_above(d):
+    for i, j in d.items():
+        if i == 'imdb' and j > 5.5:
+            return True
+    return False
+
+def list_of_movies(movies):
+    c = []
+    for i in movies:
+        if check_above(i) == True:
+            c.append(i['name'])
+    return c
+
+def category(movies, s):
+    arr = []
+    for i in movies:
+        for k, v in i.items():
+            if v == s:
+                arr.append(i['name'])
+    return arr
+
+def average_imdb(movies):
+    res, cnt = 0, 0
+    for i in movies:
+        for k, v in i.items():
+            if k == 'imdb':
+                cnt+= 1
+                res += i['imdb']
+    return (res/cnt)
+
+def category_average(movies, s):
+    res, cnt = 0, 0
+    for i in movies:
+        for k, v in i.items():
+            if v == s:
+                res += i['imdb']
+                cnt += 1
+    return (res/cnt)
+
 movies = [
 {
 "name": "Usual Suspects",
@@ -76,74 +115,9 @@ movies = [
 }
 ]
 
-
-def first(given):
-    for i in movies:
-        if i["name"] == given:
-            if i["imdb"] > 5.5:
-                return True
-    return False
-
-print(first("Exam"))
-
-
-def second():
-    a = []
-    for i in movies:
-        if i["imdb"] > 5.5:
-            a.append(i["name"])
-    return a
-
-print(second())
-
-def third(given):
-    a = []
-    for i in movies:
-        if i["category"] == given:
-            a.append(i["name"])
-    return a
-
-print(third("Romance"))
-
-def fourth(givens):
-    sum = 0
-    for i in givens:
-        sum += i["imdb"]
-    return float(sum/len(givens))
-
-
-ex = [
-{
-"name": "Usual Suspects",
-"imdb": 7.0,
-"category": "Thriller"
-},
-{
-"name": "Hitman",
-"imdb": 6.3,
-"category": "Action"
-},
-{
-"name": "Dark Knight",
-"imdb": 9.0,
-"category": "Adventure"
-},
-{
-"name": "The Help",
-"imdb": 8.0,
-"category": "Drama"
-}]
-print(fourth(ex))
-
-
-def fifth(categories):
-    sum = 0
-    cnt = 0
-    for i in movies:
-        if i["category"] in categories:
-            sum+=i["imdb"]
-            cnt+=1
-    return float(sum/cnt)
-
-ex = ["Thriller", "Drama"]
-print(fifth(ex))
+print('List of all movies:',list_of_movies(movies))
+cat = input()
+print(f'Movies of category {cat}:',category(movies, cat))
+print('Average value of all movies:',average_imdb(movies))
+cat1 = input()
+print(f'Average value of movies of category {cat1}:',category_average(movies, cat1))

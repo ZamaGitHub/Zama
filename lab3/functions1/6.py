@@ -1,7 +1,6 @@
-def f(a):
-    b = a[::-1]
-    c = " ".join(b)
-    print(c)
-
-a = input().split()
-f(a)
+def reversed(s):
+    c = []
+    for i in range(len(s)-1, -1, -1):
+        c.append(s[i])
+    return c
+print(*reversed(input().split()))

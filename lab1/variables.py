@@ -16,4 +16,4 @@ a3 = str(1)
 a4 = bool(1)
 print(f'integer {a1}, float {a2}, string {a3}, boolean {a4}')
 
-print(type(a1))
+print(type(a2))

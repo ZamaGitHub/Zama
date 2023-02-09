@@ -1,16 +1,26 @@
-class Shape():
-    def __init__(self):
-        pass
-    def area(self):
-        return 0
+from math import *
 
-class Rectangle(Shape):
-    def __init__(self, l, w):
-        self.lenght=l
-        self.width=w
 
-    def area(self):
-        return self.lenght*self.width
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-rct=Rectangle(5,9)
-print(rct.area())
+    def show(self):
+        print(f'Current coordinates: ({self.x};{self.y})')
+
+    def move(self, xnew, ynew):
+        self.x = xnew
+        self.y = ynew
+        print(f'Coordinates have been changed: ({self.x};{self.y})')
+
+    def dist(self, d1, d2):
+        self.d1 = d1
+        self.d2 = d2
+        print(sqrt(pow(self.x - d1, 2) + pow(self.y - d2, 2)))
+
+
+P1 = Point(int(input()), int(input()))
+P1.show()
+P1.move(int(input()), int(input()))
+P1.dist(int(input()), int(input()))

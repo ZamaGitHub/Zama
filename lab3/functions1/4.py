@@ -1,16 +1,14 @@
-def f(a):
-    for i in range(len(a)):
-        a[i] = int(a[i])
-        ans = True
-        if (a[i] == 1 or a[i] == 2):
-            ans = False
-        for k in range(2, a[i]):
-            if (a[i] % k == 0):
-                ans = False
-                break
-        if (ans == True):
-            print(a[i])
-
-
-a = input().split()
-f(a)
+from math import *
+def is_prime (a):
+    for i in range (2, int(sqrt(a))+1):
+        if a % i == 0:
+            return False
+    return True
+def filter_prime(b):
+    c = []
+    for i in range(len(b)):
+        if is_prime(b[i]) == True:
+            c.append(b[i])
+    return c
+arr = list(map(int, input().split()))
+print(*filter_prime(arr))

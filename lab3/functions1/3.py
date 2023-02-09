@@ -1,6 +1,8 @@
-def solve(numheads,numlegs):
-    for a in range (numheads):
-        for b in range (numlegs):
-            if(a+b==numheads and 2*a+4*b==numlegs):
-                print(a,b)
-solve(35,94)
+def solve(numheads, numlegs):
+    for chickens in range (1, numheads):
+        for rabbits in range (1, numheads):
+            solveproblem = 2*chickens + 4*rabbits
+            if solveproblem == numlegs and chickens + rabbits == numheads:
+                print(rabbits, chickens)
+                exit(0)
+solve(int(input()), int(input()))

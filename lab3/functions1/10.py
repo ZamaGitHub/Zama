@@ -1,9 +1,7 @@
-def un(a):
-    b = []
+def unique(a):
+    c = []
     for i in a:
-         if i not in b:
-            b.append(i)
-    b = " ".join(b)
-    print(b)
-a = input().split()
-un(a)
+        if i not in c:
+            c.append(i)
+    return c
+print(*unique(list(map(int,input().split()))))

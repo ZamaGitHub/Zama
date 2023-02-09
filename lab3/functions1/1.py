@@ -1,5 +1,4 @@
-def f(gramm):
-    print(28.3495231 * gramm)
-
-
-f(int(input()))
+def to_ounces(grams):
+    ounces = float(28.3495231 * grams)
+    return ounces
+print(to_ounces(int(input())))
