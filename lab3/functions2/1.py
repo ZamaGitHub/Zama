@@ -24,9 +24,8 @@ def average_imdb(movies):
     for i in movies:
         for k, v in i.items():
             if k == 'imdb':
-                cnt+= 1
-                res += i['imdb']
-    return (res/cnt)
+                res +- k
+    return res
 
 def category_average(movies, s):
     res, cnt = 0, 0
