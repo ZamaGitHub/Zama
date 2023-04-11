@@ -18,8 +18,8 @@ game_over = False
 font = pygame.font.SysFont('Verdana', 60)
 small_font = pygame.font.SysFont('Verdana', 20)
 
-restar_button = pygame.image.load('racer\images\\restart.png')
-bg = pygame.image.load('racer\images\AnimatedStreet.png')
+restart_button = pygame.image.load('images\\restart.png')
+bg = pygame.image.load('images\AnimatedStreet.png')
 
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('racer')
@@ -40,7 +40,7 @@ def reset_game(): # restart game
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('racer\images\Player.png')
+        self.image = pygame.image.load('images\Player.png')
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
     def move(self):
@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('racer\images\Enemy.png')
+        self.image = pygame.image.load('images\Enemy.png')
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, width - 40), 0)
     def move(self):
@@ -80,7 +80,7 @@ class Enemy(pygame.sprite.Sprite):
 class Coin(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('racer\images\coin.png')
+        self.image = pygame.image.load('images\coin.png')
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, width - 40), 0)
     def move(self):
@@ -129,7 +129,7 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
 all_sprites.add(E1)
 all_sprites.add(C1)
-button = Button(width // 2 - 50, height // 2 - 100, restar_button)
+button = Button(width // 2 - 50, height // 2 - 100, restart_button)
 
 
 

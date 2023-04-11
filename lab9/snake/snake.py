@@ -13,7 +13,7 @@ score = 0
 level = 1 
 points_for_new_level = 0
 run1 = True
-INC_SPEED = pygame.USEREVENT + 1q
+INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 7000)
 
 font = pygame.font.SysFont('Verdana', 20)
@@ -47,7 +47,7 @@ class Wall:
     def __init__(self, level):
         self.body = []
         try:
-            f = open('snake\levels\level{}.txt'.format(level), 'r') #levels
+            f = open('levels\level{}.txt'.format(level), 'r') #levels
             for y in range(HEIGHT // BLOCK_SIZE + 1):
                 for x in range(WIDTH // BLOCK_SIZE + 1):
                     if f.read(1) == '#':
