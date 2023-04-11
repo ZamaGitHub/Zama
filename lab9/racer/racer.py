@@ -1,215 +1,170 @@
-import pygame, sys
-from pygame.locals import *
-import math
+import pygame
 import random
-import time
-from pygame import mixer
+from pygame.locals import *
 
+pygame.init()
 
-# initial game configuration
-screen_width = 800
-screen_height = 600
 fps = 60
-car_speed = 1
+clock = pygame.time.Clock()
+
+width = 400
+height = 600
+speed = 5
+score = 0
+points_to_next_level = 0
+score_coins = 0
+game_over = False
+
+font = pygame.font.SysFont('Verdana', 60)
+small_font = pygame.font.SysFont('Verdana', 20)
+
+restar_button = pygame.image.load('racer\images\\restart.png')
+bg = pygame.image.load('racer\images\AnimatedStreet.png')
+
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption('racer')
 
 
-# some configuration for enemy cars
-side_list = ['left', 'middle', 'right']
+def reset_game(): # restart game
+    global score,speed,score_coins,points_to_next_level
+    P1.rect.center = (160,520)
+    score = 0
+    speed = 5
+    score_coins = 0
+    points_to_next_level = 0
+    E1.rect.top = 0
+    E1.rect.center = (random.randint(30, 370), 0)
+    C1.rect.top = 0
+    C1.rect.center = (random.randint(30, 370), 0)
 
-
-# class for animating background
-class Background(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self):
-        self.size = (screen_width, screen_height)
-        self.bg_num = 1
-        self.image = pygame.transform.scale(pygame.image.load(f"./assets/bg{self.bg_num}.png"), self.size)
-        self.score = 0
+        super().__init__()
+        self.image = pygame.image.load('racer\images\Player.png')
+        self.rect = self.image.get_rect()
+        self.rect.center = (160, 520)
+    def move(self):
+        pressed_keys = pygame.key.get_pressed()
+        if self.rect.top > 0:
+            if pressed_keys[K_UP]:
+                self.rect.move_ip(0,-5)
+        if self.rect.bottom < height:
+            if pressed_keys[K_DOWN]:
+                self.rect.move_ip(0,5)
+        if self.rect.left > 0:
+            if pressed_keys[K_LEFT]:
+                self.rect.move_ip(-5, 0)
+        if self.rect.right < width:
+            if pressed_keys[K_RIGHT]:
+                self.rect.move_ip(5, 0)
+    
 
-    def draw(self, surf):
-        #self.image = pygame.transform.scale(pygame.image.load(f"./assets/bg{self.bg_num}.png"), self.size)
-        surf.blit(self.image, (0, 0))
-        if self.bg_num < 2:
-            self.bg_num += 1
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('racer\images\Enemy.png')
+        self.rect = self.image.get_rect()
+        self.rect.center = (random.randint(40, width - 40), 0)
+    def move(self):
+        global score
+        if game_over == True:
+            self.rect.top = 0
+            self.rect.center = (150, 0)
         else:
-            self.bg_num = 1
+            self.rect.move_ip(0, speed)
+            if self.rect.bottom > height:
+                score += 1
+                self.rect.top = 0
+                self.rect.center = (random.randint(30, 370), 0)
 
-    def draw_score(self, surf, font, score):
-        score_text = f"Score: {score}"
-        score_surf = font.render(score_text, True, (255, 0, 0))
-        score_rect = score_surf.get_rect(center = (750, 50))
-        surf.blit(score_surf, score_rect)
-
-# class for coins
 class Coin(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.size = (30, 30)
-        self.pos = (random.randint(50, 750), 550)
-        self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
-        self.image = pygame.transform.scale(pygame.image.load(f'./assets/coin.jpeg'), self.size)
-
-    def move(self):
-        pass
-
-
-
-
-
-
-# class for enemy car
-class EnemyCar(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.size = [75, 50]
-        self.side = side_list[random.randint(0, 2)]
-        self.image = pygame.transform.scale(pygame.image.load(f"./assets/{random.randint(1, 4)}_car_{self.side}.png"), self.size)
+        self.image = pygame.image.load('racer\images\coin.png')
         self.rect = self.image.get_rect()
-        match self.side:
-            case 'left':
-                self.rect.center = (370, 390)
-            case 'middle':
-                self.rect.center = (420, 390)
-            case 'right':
-                self.rect.center = (470, 390)
-
+        self.rect.center = (random.randint(40, width - 40), 0)
     def move(self):
-        #self.size = [self.size[0] * 1, self.size[1] * 1.02]
-       # self.image = pygame.transform.scale(self.image, self.size 
-        match self.side:
-            case 'left':
-                self.rect.move_ip(-2.5, car_speed - 0.2)
-            case 'middle':
-                self.rect.move_ip(0, car_speed)
-            case 'right':
-                self.rect.move_ip(2.5, car_speed - 0.2)
-        if self.rect.bottom > 600:
-            self.side = side_list[random.randint(0, 2)]
-            self.image = pygame.transform.scale(pygame.image.load(f"./assets/{random.randint(1, 4)}_car_{self.side}.png"), self.size)
-            match self.side:
-                case 'left':
-                    self.rect.center = (370, 390)
-                case 'middle':
-                    self.rect.center = (420, 390)
-                case 'right':
-                    self.rect.center = (470, 390)
-
-
-# class for player car
-class PlayerCar(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load("./assets/main_car_middle.png"), (150, 100))
-        self.rect = self.image.get_rect()
-        self.rect.center = (420, 550)
-
-    def move(self):
-        pressed_keys = pygame.key.get_pressed()
-        if self.rect.left < 150:
-            self.image = pygame.transform.scale(pygame.image.load('./assets/main_car_left.png'), (150, 100))
-        elif self.rect.right > 650:
-            self.image = pygame.transform.scale(pygame.image.load('./assets/main_car_right.png'), (150, 100))
+        global score_coins,points_to_next_level,speed
+        if game_over == True:
+            self.rect.top = 0
+            self.rect.center = (150, 0)
         else:
-            self.image = pygame.transform.scale(pygame.image.load('./assets/main_car_middle.png'), (150, 100))
+            self.rect.move_ip(0, 5)
+            if self.rect.bottom > height or pygame.sprite.spritecollideany(P1, coins):
+                if pygame.sprite.spritecollideany(P1, coins):
+                    f = random.randint(1,3) #weight of coin
+                    score_coins += f
+                    points_to_next_level += f
+                self.rect.top = 0
+                self.rect.center = (random.randint(30, 370), 0)
+            
+    
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+    
+    def draw(self):
+        action = False
 
+        pos = pygame.mouse.get_pos()
 
-        if self.rect.left > 0 and self.rect.right < 780:
-            if pressed_keys[pygame.K_RIGHT]:
-                self.rect.move_ip(10, 0)
-        if self.rect.right < 800 and self.rect.left > 20:
-            if pressed_keys[pygame.K_LEFT]:
-                self.rect.move_ip(-10, 0)
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1:
+                action = True
         
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
+
+P1 = Player()
+E1 = Enemy()
+C1 = Coin()
+coins = pygame.sprite.Group()
+coins.add(C1)
+enemies = pygame.sprite.Group()
+enemies.add(E1)
+all_sprites = pygame.sprite.Group()
+all_sprites.add(P1)
+all_sprites.add(E1)
+all_sprites.add(C1)
+button = Button(width // 2 - 50, height // 2 - 100, restar_button)
 
 
-def main():
-    global car_speed
-    car_speed = 1
-    score = 0
 
-    # default pygame initialization
-    pygame.init()
-    clock = pygame.time.Clock()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("Night Rider")
+run = True
+while run:
     
-    # loading background image
-    bg_image = pygame.image.load('./assets/bg1.png')
-    bg_image = pygame.transform.scale(bg_image, (800, 600))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    screen.blit(bg, (0,0))
+    scores = small_font.render(str(score), True, (0,0,0)) 
+    score_of_coins = small_font.render(str(score_coins), True, (255,0,255)) 
+    screen.blit(scores, (10,10)) #show score
+    screen.blit(score_of_coins, (width - 50,10)) #show coins
+
+    if points_to_next_level >= 5: #increase speed
+        speed += 2
+        points_to_next_level = 0
+
+    for i in all_sprites:
+        screen.blit(i.image, i.rect)
+        i.move()
     
-    # initializing background class 
-    bg = Background()
-
-    # initializing enemy and player cars
-    enemy_car1 = EnemyCar()
-    player_car = PlayerCar()
-    coin = Coin()
     
-    # creating sprite group for enemy cars
-    enemy_sprites = pygame.sprite.Group()
-    enemy_sprites.add(enemy_car1)
-
-    coin_group = pygame.sprite.Group()
-    coin_group.add(coin)
-
-
+    if pygame.sprite.spritecollideany(P1, enemies): #collide with enemy
+        game_over = True
     
-    # creating sprite group for all cars
-    all_sprites = pygame.sprite.Group()
-    all_sprites.add(enemy_car1)
-    all_sprites.add(player_car)
-    all_sprites.add(coin)
+    if game_over == True: #to restart game
+        if button.draw() == True:
+            game_over = False
+            reset_game()
+    pygame.display.update()
+    clock.tick(fps)
 
-    # increasing speed of the enemy cars
-    inc_speed = pygame.USEREVENT + 1
-    pygame.time.set_timer(inc_speed, 1000)
-
-    # loading music
-    mixer.music.load('./assets/bg_music.mp3')
-    mixer.music.play()
-
-    font = pygame.font.Font('./assets/Blessed.ttf', 20)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == inc_speed:
-                car_speed += 0.1
-                
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-        # drawing background on the screen
-        screen.fill((255, 255, 255))
-        bg.draw(screen)
-        bg.draw_score(screen, font, score)
-        # drawing all sprites on the screen
-        for sprite in all_sprites:
-            screen.blit(sprite.image, sprite.rect)
-            sprite.move()
+pygame.quit()
 
 
-        # collision detection of player car with enemy cars
-        if pygame.sprite.spritecollideany(player_car, enemy_sprites):
-            screen.fill((255, 0, 0))
-            pygame.display.update()
-            for sprite in all_sprites:
-                sprite.kill()
-            mixer.music.pause()
-            time.sleep(2)
-            pygame.quit()
-            sys.exit()
-        # checking when player collects coins, increasing score and redrawing coin
-        if pygame.sprite.spritecollideany(player_car, coin_group):
-            score += 1
-            for coin in coin_group:
-                coin.kill()
-            coin = Coin()
-            coin_group.add(coin)
-            all_sprites.add(coin)
-
-        pygame.display.update()
-        clock.tick(60)
-
-    
-
-if __name__ == "__main__":
-    main()
